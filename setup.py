@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
     name='PyARC',
     version='0.1.0',
-    packages=[''],
+    packages=['wiringpi'],
     url='',
     license='',
     author='acl,Tazavoo',
