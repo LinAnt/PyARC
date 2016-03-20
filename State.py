@@ -34,7 +34,7 @@ class StabState(State):
         global StateTime
         global StableTemperature
 
-        if time()-StateTime < StabilizationTime:
+        if time()-StateTime < StabilizationTime: # Checks how many seconds have passed since stabilization began
             return StabState
         else:
             StableTemperature = self.check_column_temperature()
@@ -46,7 +46,16 @@ class StabState(State):
 
 class OutState(State):
     def run(self):
-        pass
+        if self.check_boiler_temperature() > MaxTemperature:
+            print("Max temperature reached, shutting down")
+            SystemExit(0)
+
+        elif self.check_column_temperature() == StableTemperature:
+            return OutState
+
+        else:
+            return ReStabState
+
         # One heater on, valve open
         # Check boiler temp, if equal to maxTemp, shut down the system.
         # Check column temperature, if the difference between column temp and stableTemp is
@@ -55,7 +64,16 @@ class OutState(State):
 
 class ReStabState(State):
     def run(self, controller):
-        pass
+        if self.check_boiler_temperature() > MaxTemperature:
+            print("Max temperature reached, shutting down")
+            SystemExit(0)
+
+        elif self.check_column_temperature() == StableTemperature:
+            return OutState
+
+        else:
+            return ReStabState
+
         # One heater on, valve closed
         # Check boiler temp, if equal to maxTemp, shut down the system.
         # Check column temperature, if equal to stableTemp -> OutState

@@ -1,6 +1,7 @@
 # This file contains all the variables for the Controller itself
 
-
+#MaxTemperature - Max temperature of the boiler
+MaxTemperature = 98
 # HeatUpTemperature - at which temperature should the system switch to stabilization
 HeatUpTemperature = 50
 
