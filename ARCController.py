@@ -30,19 +30,51 @@ class Controller:
 
 
 def heat_up():
-    print("You typed zero.\n")
+    GPIO.output(Element1, GPIO.HIGH)
+    GPIO.output(Element2, GPIO.HIGH)
+    if read_temp() > HeatUpTemperature:
+        return 1
+    else:
+        return 0
 
 
 def stabilize():
-    print("You typed zero.\n")
+    global StateTime
+    global StableTemperature
+    GPIO.output(Element1, GPIO.HIGH)
+    GPIO.output(Element2, GPIO.LOW)
+    if StateTime < 0:
+        StateTime = time()
+        return 1
+
+    elif time - StateTime < StabilizationTime:
+        return 1
+
+    else:
+        StableTemperature = getPT100()
+        return 2
 
 
 def circulation():
-    print("You typed zero.\n")
+    if read_temp() >= MaxTemperature:
+        shutdown()
+
+    GPIO.output(Solenoid, GPIO.HIGH)
+    if StableTemperature != getPT100():
+        GPIO.output(Solenoid, GPIO.LOW)
+        return 3
+    else:
+        return 2
 
 
 def reheat():
-    print("You typed zero.\n")
+    if read_temp() >= MaxTemperature:
+        shutdown()
+    GPIO.output(Solenoid, GPIO.LOW)
+    if StableTemperature == getPT100():
+        return 2
+    else:
+        return 3
 
 
 def configure_ds1820():
@@ -106,3 +138,11 @@ def read_temp():
         temp_string = lines[1][equals_pos+2:]
         temp_c = float(temp_string) / 1000.0
         return temp_c
+
+
+def shutdown():
+    for i in PinList:
+        GPIO.output(i, GPIO.LOW)
+
+    GPIO.cleanup()
+    SystemExit(0)
