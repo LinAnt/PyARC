@@ -1,4 +1,4 @@
-from Config import *
+import Config
 from time import time
 
 
@@ -19,7 +19,7 @@ class State:
 class HeatUpState(State):
     def run(self):
         global StateTime
-        if self.check_boiler_temperature() == HeatUpTemperature:
+        if self.check_boiler_temperature() == Config.HeatUpTemperature:
             StateTime = time()
             return StabState
         else:
@@ -34,7 +34,7 @@ class StabState(State):
         global StateTime
         global StableTemperature
 
-        if time()-StateTime < StabilizationTime: # Checks how many seconds have passed since stabilization began
+        if time()-StateTime < Config.StabilizationTime: # Checks how many seconds have passed since stabilization began
             return StabState
         else:
             StableTemperature = self.check_column_temperature()
@@ -46,11 +46,11 @@ class StabState(State):
 
 class OutState(State):
     def run(self):
-        if self.check_boiler_temperature() > MaxTemperature:
+        if self.check_boiler_temperature() > Config.MaxTemperature:
             print("Max temperature reached, shutting down")
             SystemExit(0)
 
-        elif self.check_column_temperature() == StableTemperature:
+        elif self.check_column_temperature() == Config.StableTemperature:
             return OutState
 
         else:
@@ -64,11 +64,11 @@ class OutState(State):
 
 class ReStabState(State):
     def run(self, controller):
-        if self.check_boiler_temperature() > MaxTemperature:
+        if self.check_boiler_temperature() > Config.MaxTemperature:
             print("Max temperature reached, shutting down")
             SystemExit(0)
 
-        elif self.check_column_temperature() == StableTemperature:
+        elif self.check_column_temperature() == Config.StableTemperature:
             return OutState
 
         else:

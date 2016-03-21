@@ -5,33 +5,6 @@ import glob
 import time
 
 
-class Controller:
-    def __init__(self):
-        self.state = 0
-        self.states = {0: heat_up(),
-                       1: stabilize,
-                       2: circulation,
-                       3: reheat,
-                       }
-
-    def run(self):
-        self.state = self.states[self.state]()
-
-
-def heat_up():
-    print("You typed zero.\n")
-
-
-def stabilize():
-    print("You typed zero.\n")
-
-
-def circulation():
-    print("You typed zero.\n")
-
-
-def reheat():
-    print("You typed zero.\n")
 
 
 def configure_ds1820():
@@ -95,3 +68,4 @@ def read_temp():
         temp_string = lines[1][equals_pos+2:]
         temp_c = float(temp_string) / 1000.0
         return temp_c
+
