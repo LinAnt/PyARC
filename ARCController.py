@@ -47,7 +47,7 @@ def stabilize():
         StateTime = time()
         return 1
 
-    elif time - StateTime < StabilizationTime:
+    elif time() - StateTime < StabilizationTime:
         return 1
 
     else:
@@ -111,14 +111,6 @@ def getPT100():
     ADCcode = RTDdata >> 1
     R = ADCcode * Rref / 32768
     return round(calendar_van_dusen(R), HowToRound)
-
-
-def configure_max31865():
-    global spi
-    spi.open(0, 0)
-    spi.mode = 3
-    lst = [0x80, 0xc2]  # should be [0x80,0xc2] if 2 or 4 wire probe, [0x80,0xD2] for 3 wire probe.
-    spi.writebytes(lst)
 
 
 def read_temp_raw():
