@@ -2,7 +2,7 @@ import os
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 
-from ARCController import Controller
+from ARCController import Controller, shutdown
 
 if __name__ == '__main__':
     scheduler = BlockingScheduler()
@@ -13,5 +13,6 @@ if __name__ == '__main__':
     try:
         scheduler.start()
     except (KeyboardInterrupt, SystemExit):
-        pass
+        print("Something unexpected happened...")
+        shutdown(1)
 

@@ -57,7 +57,7 @@ def stabilize():
 
 def circulation():
     if read_temp() >= MaxTemperature:
-        shutdown()
+        shutdown(0)
 
     GPIO.output(Solenoid, GPIO.HIGH)
     if StableTemperature != getPT100():
@@ -69,7 +69,7 @@ def circulation():
 
 def reheat():
     if read_temp() >= MaxTemperature:
-        shutdown()
+        shutdown(0)
     GPIO.output(Solenoid, GPIO.LOW)
     if StableTemperature == getPT100():
         return 2
@@ -140,9 +140,9 @@ def read_temp():
         return temp_c
 
 
-def shutdown():
+def shutdown(code):
     for i in PinList:
         GPIO.output(i, GPIO.LOW)
 
     GPIO.cleanup()
-    SystemExit(0)
+    SystemExit(code)
