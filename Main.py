@@ -2,10 +2,12 @@ import os
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 
+from ARCController import Controller
 
 if __name__ == '__main__':
     scheduler = BlockingScheduler()
-    # scheduler.add_job('sys:stdout.write', 'interval', seconds=3, args=['tick\n'])
+    controller = Controller()
+    scheduler.add_job('controller.run', 'interval', seconds=3)
     print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C'))
 
     try:
