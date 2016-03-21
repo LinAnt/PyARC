@@ -3,9 +3,11 @@ import math
 import os
 import glob
 import time
+from Config import *
 
 
 class Controller:
+
     def __init__(self):
         self.state = 0
         self.states = {0: heat_up(),

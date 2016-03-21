@@ -1,11 +1,12 @@
 import spidev
+
 # This file contains all the variables for the Controller itself
 
 # GPIO Pins for the relay board (GPIO.setmode(GPIO.BOARD))
-Element1    = 11
-Element2    = 13
-Solenoid    = 15
-ExtraRelay  = 16
+Element1 = 11
+Element2 = 13
+Solenoid = 15
+ExtraRelay = 16
 
 # PROBE CONFIGURATION
 Rref = 400                  # Rref = 400 for PT100, Rref = 4000 for PT1000
