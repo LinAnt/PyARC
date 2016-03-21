@@ -1,5 +1,3 @@
-import spidev
-
 # This file contains all the variables for the Controller itself
 
 # GPIO Pins for the relay board (GPIO.setmode(GPIO.BOARD))
@@ -27,4 +25,4 @@ StateTime = 0
 StableTemperature = -1
 PinList = [Element1, Element2, Solenoid, ExtraRelay]  # Use when initializing the relay board
 device_file = ""
-spi = spidev.SpiDev()
+

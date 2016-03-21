@@ -1,12 +1,14 @@
-import spidev
+import glob
 import math
 import os
-import glob
 import time
+import spidev
+
 from Config import *
 
 
 class Controller:
+    spi = spidev.SpiDev()
 
     def __init__(self):
         self.state = 0
@@ -15,6 +17,8 @@ class Controller:
                        2: circulation,
                        3: reheat,
                        }
+        configure_ds1820()
+        configure_max31865()
 
     def run(self):
         self.state = self.states[self.state]()
