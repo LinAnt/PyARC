@@ -3,6 +3,7 @@ import math
 import os
 import time
 import spidev
+import RPi.GPIO as GPIO
 
 from Config import *
 
@@ -12,13 +13,17 @@ class Controller:
 
     def __init__(self):
         self.state = 0
-        self.states = {0: heat_up(),
+        self.states = {0: heat_up,
                        1: stabilize,
                        2: circulation,
                        3: reheat,
                        }
         configure_ds1820()
         configure_max31865()
+        # Setup GPIO and ensure the pins start as LOW
+        for i in PinList:
+            GPIO.setup(i, GPIO.OUT)
+            GPIO.output(i, GPIO.LOW)
 
     def run(self):
         self.state = self.states[self.state]()
