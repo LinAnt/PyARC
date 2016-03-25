@@ -10,6 +10,7 @@ from Config import *
 
 class Controller:
     def __init__(self):
+        GPIO.setmode(GPIO.BOARD)
         self.spi = spidev.SpiDev()
         self.state = 0
         self.StableTemperature = StableTemperature
@@ -30,6 +31,10 @@ class Controller:
     def run(self):
         self.state = self.states[self.state]()
 
+    def print_state(self):
+        print('State: ', self.state, 'StateTime', self.StateTime, 'StableTemp:' , self.StableTemperature,
+              'Current PT100', self.getPT100())
+
     def configure_max31865(self):
         self.spi.open(0, 0)
         self.spi.mode = 3
@@ -48,10 +53,10 @@ class Controller:
         GPIO.output(Element1, GPIO.HIGH)
         GPIO.output(Element2, GPIO.LOW)
         if self.StateTime < 0:
-            self.StateTime = time()
+            self.StateTime = time.time()
             return 1
 
-        elif time() - self.StateTime < StabilizationTime:
+        elif time.time() - self.StateTime < StabilizationTime:
             return 1
 
         else:
@@ -63,11 +68,11 @@ class Controller:
             shutdown(0)
 
         GPIO.output(Solenoid, GPIO.HIGH)
-        if StableTemperature != self.getPT100():
+        if abs(StableTemperature - self.getPT100()) < 0.1:
             GPIO.output(Solenoid, GPIO.LOW)
-            return 3
-        else:
             return 2
+        else:
+            return 3
 
     def reheat(self):
         if self.read_temp() >= MaxTemperature:
@@ -87,7 +92,7 @@ class Controller:
         device_folder = glob.glob(base_dir + '28*')[0]
         self.device_file = device_folder + '/w1_slave'
 
-    def calendar_van_dusen(R):
+    def calendar_van_dusen(self, R):
         a = 3.9083E-03
         b = -.7750E-07
         R0 = Rref / 4

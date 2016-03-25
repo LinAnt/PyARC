@@ -14,14 +14,13 @@ HowToRound = 2
 MaxTemperature = 98
 
 # HeatUpTemperature - at which temperature should the system switch to stabilization
-HeatUpTemperature = 70
+HeatUpTemperature = 20
 
 # StabilizationTime - how many seconds should the Column be stable?
-StabilizationTime = 18000
+StabilizationTime = 30
 
 # Do not edit anything of the following stuff...
 StateTime = -1
 StableTemperature = -1
 PinList = [Element1, Element2, Solenoid, ExtraRelay]  # Use when initializing the relay board
 device_file = ""
-
