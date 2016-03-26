@@ -19,7 +19,6 @@ class Controller:
         self.states = {0: self.heat_up,
                        1: self.stabilize,
                        2: self.circulation,
-                       3: self.reheat,
                        }
         self.configure_ds1820()
         self.configure_max31865()
@@ -30,10 +29,11 @@ class Controller:
 
     def run(self):
         self.state = self.states[self.state]()
+        self.print_state()
 
     def print_state(self):
-        print('State: ', self.state, 'StateTime', self.StateTime, 'StableTemp:' , self.StableTemperature,
-              'Current PT100', self.getPT100())
+        print('State: ', self.state, 'StateTime', self.StateTime, 'StableTemp:', self.StableTemperature,
+              'Current PT100', self.getPT100(), 'Current DS1820:', self.read_temp())
 
     def configure_max31865(self):
         self.spi.open(0, 0)
@@ -42,7 +42,6 @@ class Controller:
         self.spi.writebytes(lst)
 
     def heat_up(self):
-        GPIO.output(Element1, GPIO.HIGH)
         GPIO.output(Element2, GPIO.HIGH)
         if self.read_temp() > HeatUpTemperature:
             return 1
@@ -50,7 +49,6 @@ class Controller:
             return 0
 
     def stabilize(self):
-        GPIO.output(Element1, GPIO.HIGH)
         GPIO.output(Element2, GPIO.LOW)
         if self.StateTime < 0:
             self.StateTime = time.time()
@@ -65,23 +63,13 @@ class Controller:
 
     def circulation(self):
         if self.read_temp() >= MaxTemperature:
-            shutdown(0)
-
-        GPIO.output(Solenoid, GPIO.HIGH)
-        if abs(StableTemperature - self.getPT100()) < 0.1:
+            raise Exception('Boiler Too Hot')
+        if self.getPT100() - self.StableTemperature == 0.0:
+            GPIO.output(Solenoid, GPIO.HIGH)
+            return 2
+        else:
             GPIO.output(Solenoid, GPIO.LOW)
             return 2
-        else:
-            return 3
-
-    def reheat(self):
-        if self.read_temp() >= MaxTemperature:
-            shutdown(0)
-        GPIO.output(Solenoid, GPIO.LOW)
-        if StableTemperature == self.getPT100():
-            return 2
-        else:
-            return 3
 
     def configure_ds1820(self):
 
@@ -97,7 +85,7 @@ class Controller:
         b = -.7750E-07
         R0 = Rref / 4
 
-        return (-R0 * a + math.sqrt(R0 * R0 * a * a - 4 * R0 * b * (R0 - R))) / (2 * R0 * b);
+        return (-R0 * a + math.sqrt(R0 * R0 * a * a - 4 * R0 * b * (R0 - R))) / (2 * R0 * b)
 
     def getPT100(self):
         reg = self.spi.readbytes(9)
@@ -124,10 +112,3 @@ class Controller:
             temp_c = float(temp_string) / 1000.0
             return temp_c
 
-
-def shutdown(code):
-    for i in PinList:
-        GPIO.output(i, GPIO.LOW)
-
-    GPIO.cleanup()
-    SystemExit(code)

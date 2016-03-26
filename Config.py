@@ -8,16 +8,16 @@ ExtraRelay = 16
 
 # PROBE CONFIGURATION
 Rref = 400                  # Rref = 400 for PT100, Rref = 4000 for PT1000
-HowToRound = 2
+HowToRound = 1
 
 # MaxTemperature - Max temperature of the boiler
-MaxTemperature = 98
+MaxTemperature = 30
 
 # HeatUpTemperature - at which temperature should the system switch to stabilization
 HeatUpTemperature = 20
 
 # StabilizationTime - how many seconds should the Column be stable?
-StabilizationTime = 30
+StabilizationTime = 10
 
 # Do not edit anything of the following stuff...
 StateTime = -1
