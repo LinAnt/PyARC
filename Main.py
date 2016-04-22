@@ -14,8 +14,7 @@ if __name__ == '__main__':
         while True:
             controller.run()
             time.sleep(3)
-    # except (KeyboardInterrupt, SystemExit, Exception):
-    except:
+    except (KeyboardInterrupt, SystemExit, Exception):
         print("Done!")
 
     finally:
