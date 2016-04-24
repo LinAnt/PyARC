@@ -8,5 +8,5 @@ setup(
     license='',
     author='acl,Tazavoo',
     author_email='',
-    description='ARC controller for python', requires=['spidev', 'apscheduler']
+    description='ARC controller for python', requires=['spidev', ]
 )
